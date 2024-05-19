@@ -1,18 +1,3 @@
-var height = 6; //number of guesses
-var width = 5; //length of the word
-
-var row = 0; //current guess (attempt #)
-var col = 0; //current letter for that attempt
-
-var score = localStorage.getItem("score")
-  ? parseInt(localStorage.getItem("score"))
-  : 0;
-
-// var getScore = parseInt(localStorage.getItem("score"));
-document.getElementById("score").innerText = `Your Score: ${score}`;
-
-var gameOver = false;
-// var word = "SQUID";
 var wordList = [
   "cigar",
   "rebut",
@@ -12966,6 +12951,22 @@ var guessList = [
   "zymic",
 ];
 
+var height = 6; //number of guesses
+var width = 5; //length of the word
+
+var row = 0; //current guess (attempt #)
+var col = 0; //current letter for that attempt
+
+var score = localStorage.getItem("score")
+  ? parseInt(localStorage.getItem("score"))
+  : 0;
+
+// var getScore = parseInt(localStorage.getItem("score"));
+document.getElementById("score").innerText = `Your Score: ${score}`;
+
+var gameOver = false;
+// var word = "SQUID";
+
 guessList = guessList.concat(wordList);
 
 var word = wordList[Math.floor(Math.random() * wordList.length)].toUpperCase();
@@ -13096,28 +13097,32 @@ function update() {
   let guess = "";
   document.getElementById("answer").innerText = "";
 
-  //string up the guesses into the word
+  // string up the guesses into the word
   for (let c = 0; c < width; c++) {
     let currTile = document.getElementById(row.toString() + "-" + c.toString());
     let letter = currTile.innerText;
     guess += letter;
   }
 
-  guess = guess.toLowerCase(); //case sensitive
-  console.log(guess);
+  guess = guess.toLowerCase(); // case sensitive
 
   if (!guessList.includes(guess)) {
+    // If the guess is not in the word list
     document.getElementById("answer").innerText = "Not in word list";
+    if (score > 0) {
+      score -= 1;
+      localStorage.setItem("score", score.toString()); // Update local storage score
+      document.getElementById("score").innerText = `Your Score: ${score}`; // Display updated score
+    }
+
     return;
   }
 
-  //start processing guess
+  // Resetting the correct variable and letter count
   let correct = 0;
-
-  let letterCount = {}; //keep track of letter frequency, ex) KENNY -> {K:1, E:1, N:2, Y: 1}
+  let letterCount = {};
   for (let i = 0; i < word.length; i++) {
     let letter = word[i];
-
     if (letterCount[letter]) {
       letterCount[letter] += 1;
     } else {
@@ -13125,63 +13130,46 @@ function update() {
     }
   }
 
-  console.log(letterCount);
-
-  //first iteration, check all the correct ones first
+  // Check each guessed letter against the word
   for (let c = 0; c < width; c++) {
     let currTile = document.getElementById(row.toString() + "-" + c.toString());
     let letter = currTile.innerText;
 
-    //Is it in the correct position?
+    // If the letter is in the correct position
     if (word[c] == letter) {
       currTile.classList.add("correct");
-
       let keyTile = document.getElementById("Key" + letter);
       keyTile.classList.remove("present");
       keyTile.classList.add("correct");
-
       correct += 1;
-      letterCount[letter] -= 1; //deduct the letter count
+      letterCount[letter] -= 1;
     }
 
     if (correct == width) {
+      // If the entire word is guessed correctly
       document.getElementById("answer").innerText =
         "You Guessed the correct word. Refresh to play again.";
       score += 1;
-      parseInt(localStorage.setItem("score", score.toString()));
-      var getScore = localStorage.getItem("score");
-      document.getElementById("score").innerText = `Your Score: ${getScore}`;
-      console.log(score);
+      localStorage.setItem("score", score.toString()); // Update local storage score
+      document.getElementById("score").innerText = `Your Score: ${score}`; // Display updated score
       gameOver = true;
-    }
-
-    if (gameOver) {
-      var score = parseInt(localStorage.getItem("score"));
-      var updatedScore = score + 1;
-      localStorage.setItem("score", updatedScore);
-      document.getElementById("score").innerText = `Your Score: ${getScore}`;
     }
   }
 
-  console.log(letterCount);
-  //go again and mark which ones are present but in wrong position
+  // Mark present or absent letters
   for (let c = 0; c < width; c++) {
     let currTile = document.getElementById(row.toString() + "-" + c.toString());
     let letter = currTile.innerText;
 
-    // skip the letter if it has been marked correct
     if (!currTile.classList.contains("correct")) {
-      //Is it in the word?         //make sure we don't double count
       if (word.includes(letter) && letterCount[letter] > 0) {
         currTile.classList.add("present");
-
         let keyTile = document.getElementById("Key" + letter);
         if (!keyTile.classList.contains("correct")) {
           keyTile.classList.add("present");
         }
         letterCount[letter] -= 1;
-      } // Not in the word or (was in word but letters all used up to avoid overcount)
-      else {
+      } else {
         currTile.classList.add("absent");
         let keyTile = document.getElementById("Key" + letter);
         keyTile.classList.add("absent");
@@ -13189,8 +13177,8 @@ function update() {
     }
   }
 
-  row += 1; //start new row
-  col = 0; //start at 0 for new row
+  row += 1;
+  col = 0;
 }
 
 function resetGame() {
