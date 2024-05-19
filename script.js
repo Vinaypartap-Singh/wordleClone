@@ -4,6 +4,13 @@ var width = 5; //length of the word
 var row = 0; //current guess (attempt #)
 var col = 0; //current letter for that attempt
 
+var score = localStorage.getItem("score")
+  ? parseInt(localStorage.getItem("score"))
+  : 0;
+
+// var getScore = parseInt(localStorage.getItem("score"));
+document.getElementById("score").innerText = `Your Score: ${score}`;
+
 var gameOver = false;
 // var word = "SQUID";
 var wordList = [
@@ -13024,6 +13031,30 @@ function intialize() {
   });
 }
 
+function revealRandomLetters() {
+  const numReveals = Math.floor(width / 3); // Adjust this value as needed
+  const revealedPositions = new Set();
+
+  while (revealedPositions.size < numReveals) {
+    const randomIndex = Math.floor(Math.random() * width);
+    revealedPositions.add(randomIndex);
+  }
+
+  let hintsContainer = document.createElement("div");
+  hintsContainer.id = "hints";
+  hintsContainer.classList.add("hints-container");
+  document.body.appendChild(hintsContainer);
+
+  revealedPositions.forEach((pos) => {
+    let hint = document.createElement("div");
+    hint.classList.add("hint");
+    hint.innerHTML = `Hint: ${word[pos].toUpperCase()}`;
+    hintsContainer.appendChild(hint);
+  });
+
+  document.getElementById("hintBtn").style.display = "none";
+}
+
 function processKey() {
   e = { code: this.id };
   processInput(e);
@@ -13114,7 +13145,21 @@ function update() {
     }
 
     if (correct == width) {
+      document.getElementById("answer").innerText =
+        "You Guessed the correct word. Refresh to play again.";
+      score += 1;
+      parseInt(localStorage.setItem("score", score.toString()));
+      var getScore = localStorage.getItem("score");
+      document.getElementById("score").innerText = `Your Score: ${getScore}`;
+      console.log(score);
       gameOver = true;
+    }
+
+    if (gameOver) {
+      var score = parseInt(localStorage.getItem("score"));
+      var updatedScore = score + 1;
+      localStorage.setItem("score", updatedScore);
+      document.getElementById("score").innerText = `Your Score: ${getScore}`;
     }
   }
 
@@ -13146,4 +13191,35 @@ function update() {
 
   row += 1; //start new row
   col = 0; //start at 0 for new row
+}
+
+function resetGame() {
+  row = 0;
+  col = 0;
+  gameOver = false;
+
+  // Clear the board
+  for (let r = 0; r < height; r++) {
+    for (let c = 0; c < width; c++) {
+      let currTile = document.getElementById(r.toString() + "-" + c.toString());
+      currTile.innerText = "";
+      currTile.className = "tile"; // Reset class
+    }
+  }
+
+  // Clear the keyboard
+  let keyTiles = document.querySelectorAll(".key-tile, .enter-key-tile");
+  keyTiles.forEach((keyTile) => {
+    keyTile.className = keyTile.classList.contains("enter-key-tile")
+      ? "enter-key-tile"
+      : "key-tile";
+  });
+
+  // Reset the word to a new random word from the word list
+  word = wordList[Math.floor(Math.random() * wordList.length)].toUpperCase();
+  console.log(word);
+
+  // Hide the "Play Again" button
+  document.getElementById("play-again").style.display = "none";
+  document.getElementById("answer").innerText = "";
 }

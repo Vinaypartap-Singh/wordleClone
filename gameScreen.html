@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+
+    <title>Ambiosity</title>
+</head>
+
+<body>
+    <div id="game">
+        <div id="brandName">
+            <h1>Ambiosity</h1>
+            <h3 id="score">Your Score: 0</h3>
+        </div>
+
+        <hr>
+        <br>
+        <button class="playBtn" onclick="revealRandomLetters()" id="hintBtn">Get A Hint</button>
+        <div id="board"></div>
+        <h1 id="answer"></h1>
+        <button id="play-again" onclick="resetGame()">Play Again</button>
+
+    </div>
+
+</body>
+
+<script src="./script.js"></script>
+
+
+</html>

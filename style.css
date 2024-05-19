@@ -9,9 +9,12 @@ body {
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   text-align: center;
 }
-
 #brandName {
   padding: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 #board {
@@ -101,4 +104,25 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.playBtn {
+  padding: 17px 40px;
+  border: none;
+  background: black;
+  color: white;
+  border-radius: 50px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.hint {
+  display: inline-flex;
+  border: 1px solid #003cff57;
+  padding: 10px 15px;
+  border-radius: 2px;
+  background: #003cff57;
+  font-weight: bold;
+
+  margin-top: 20px;
 }
