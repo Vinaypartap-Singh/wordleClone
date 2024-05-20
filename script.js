@@ -484,34 +484,5 @@ function update() {
 }
 
 function resetGame() {
-  row = 0;
-  col = 0;
-  gameOver = false;
-
-  for (let r = 0; r < height; r++) {
-    for (let c = 0; c < width; c++) {
-      let currTile = document.getElementById(r.toString() + "-" + c.toString());
-      currTile.innerText = "";
-      currTile.className = "tile";
-    }
-  }
-
-  let keyTiles = document.querySelectorAll(".key-tile, .enter-key-tile");
-  keyTiles.forEach((keyTile) => {
-    keyTile.className = keyTile.classList.contains("enter-key-tile")
-      ? "enter-key-tile"
-      : "key-tile";
-  });
-
-  word = wordList[Math.floor(Math.random() * wordList.length)].toUpperCase();
-  console.log(word);
-
-  revealRandomLetters();
-  document.getElementById("answer").innerText = "";
+  location.reload();
 }
-
-// Play Again button handler
-document.getElementById("play-again").addEventListener("click", () => {
-  document.getElementById("play-again").style.display = "none";
-  resetGame();
-});
