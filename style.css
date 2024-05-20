@@ -18,8 +18,8 @@ body {
 }
 
 #board {
-  width: 350px;
-  height: 420px;
+  /* width: 350px; */
+  /* height: 420px; */
   margin: auto;
   margin-top: 40px;
   display: flex;
