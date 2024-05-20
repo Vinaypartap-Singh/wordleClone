@@ -18,10 +18,13 @@
 
         <hr>
         <br>
-        <button class="playBtn" onclick="revealRandomLetters()" id="hintBtn">Get A Hint</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px;">
+            <button id="play-again" class="playBtnOutline" onclick="resetGame()">Play Again</button>
+            <button class="playBtnOutline" onclick="revealRandomLetters()" id="hintBtn">Get A Hint</button>
+        </div>
+
         <div id="board"></div>
         <h1 id="answer"></h1>
-        <button id="play-again" onclick="resetGame()">Play Again</button>
 
     </div>
 

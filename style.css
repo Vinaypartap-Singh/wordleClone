@@ -116,6 +116,16 @@ body {
   cursor: pointer;
 }
 
+.playBtnOutline {
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
 .hint {
   display: inline-flex;
   border: 1px solid #003cff57;
@@ -125,4 +135,8 @@ body {
   font-weight: bold;
 
   margin-top: 20px;
+}
+
+#play-again {
+  display: none;
 }

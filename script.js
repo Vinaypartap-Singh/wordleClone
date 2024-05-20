@@ -13106,18 +13106,6 @@ function update() {
 
   guess = guess.toLowerCase(); // case sensitive
 
-  if (!guessList.includes(guess)) {
-    // If the guess is not in the word list
-    document.getElementById("answer").innerText = "Not in word list";
-    if (score > 0) {
-      score -= 1;
-      localStorage.setItem("score", score.toString()); // Update local storage score
-      document.getElementById("score").innerText = `Your Score: ${score}`; // Display updated score
-    }
-
-    return;
-  }
-
   // Resetting the correct variable and letter count
   let correct = 0;
   let letterCount = {};
@@ -13127,6 +13115,14 @@ function update() {
       letterCount[letter] += 1;
     } else {
       letterCount[letter] = 1;
+    }
+  }
+
+  if (!guessList.includes(guess)) {
+    if (score > 0) {
+      score -= 1;
+      localStorage.setItem("score", score.toString()); // Update local storage score
+      document.getElementById("score").innerText = `Your Score: ${score}`; // Display updated score
     }
   }
 
@@ -13148,11 +13144,12 @@ function update() {
     if (correct == width) {
       // If the entire word is guessed correctly
       document.getElementById("answer").innerText =
-        "You Guessed the correct word. Refresh to play again.";
+        "You Guessed the correct word. Click Play again to restart the game";
       score += 1;
       localStorage.setItem("score", score.toString()); // Update local storage score
       document.getElementById("score").innerText = `Your Score: ${score}`; // Display updated score
       gameOver = true;
+      document.getElementById("play-again").style.display = "block";
     }
   }
 
@@ -13208,6 +13205,5 @@ function resetGame() {
   console.log(word);
 
   // Hide the "Play Again" button
-  document.getElementById("play-again").style.display = "none";
   document.getElementById("answer").innerText = "";
 }
