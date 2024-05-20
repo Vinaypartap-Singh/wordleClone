@@ -260,7 +260,239 @@
 //   document.getElementById("answer").innerText = "";
 // }
 
+// var wordList = ["mongoose", "express", "nodejs"];
+// var guessList = ["javascript", "python", "rust", "springboot"];
+
+// var row = 0; // current guess (attempt #)
+// var col = 0; // current letter for that attempt
+
+// var score = localStorage.getItem("score")
+//   ? parseInt(localStorage.getItem("score"))
+//   : 0;
+
+// document.getElementById("score").innerText = `Your Score: ${score}`;
+
+// var gameOver = false;
+
+// guessList = guessList.concat(wordList);
+
+// var word = wordList[Math.floor(Math.random() * wordList.length)].toUpperCase();
+// console.log(word);
+
+// var height = 1; // number of guesses
+// var width = word.length; // length of the word
+
+// window.onload = function () {
+//   initialize();
+//   revealRandomLetters();
+// };
+
+// function initialize() {
+//   // Create the game board
+//   for (let r = 0; r < height; r++) {
+//     for (let c = 0; c < width; c++) {
+//       let tile = document.createElement("span");
+//       tile.id = r.toString() + "-" + c.toString();
+//       tile.classList.add("tile");
+//       tile.innerText = "";
+//       document.getElementById("board").appendChild(tile);
+//     }
+//   }
+
+//   // Create the keyboard
+//   let keyboard = [
+//     ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+//     ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+//     ["Enter", "Z", "X", "C", "V", "B", "N", "M", "⌫"],
+//   ];
+
+//   for (let i = 0; i < keyboard.length; i++) {
+//     let currRow = keyboard[i];
+//     let keyboardRow = document.createElement("div");
+//     keyboardRow.classList.add("keyboard-row");
+
+//     for (let j = 0; j < currRow.length; j++) {
+//       let keyTile = document.createElement("div");
+
+//       let key = currRow[j];
+//       keyTile.innerText = key;
+//       if (key == "Enter") {
+//         keyTile.id = "Enter";
+//       } else if (key == "⌫") {
+//         keyTile.id = "Backspace";
+//       } else if ("A" <= key && key <= "Z") {
+//         keyTile.id = "Key" + key;
+//       }
+
+//       keyTile.addEventListener("click", processKey);
+
+//       if (key == "Enter") {
+//         keyTile.classList.add("enter-key-tile");
+//       } else {
+//         keyTile.classList.add("key-tile");
+//       }
+//       keyboardRow.appendChild(keyTile);
+//     }
+//     document.body.appendChild(keyboardRow);
+//   }
+
+//   // Listen for Key Press
+//   document.addEventListener("keyup", (e) => {
+//     processInput(e);
+//   });
+// }
+
+// function revealRandomLetters() {
+//   const numReveals = Math.floor(width / 3); // Adjust this value as needed
+//   const revealedPositions = new Set();
+
+//   while (revealedPositions.size < numReveals) {
+//     const randomIndex = Math.floor(Math.random() * width);
+//     revealedPositions.add(randomIndex);
+//   }
+
+//   revealedPositions.forEach((pos) => {
+//     let hintTile = document.getElementById("0-" + pos);
+//     hintTile.innerText = word[pos];
+//     hintTile.classList.add("hint-tile");
+//   });
+
+//   document.getElementById("hintBtn").style.display = "none";
+// }
+
+// function processKey() {
+//   e = { code: this.id };
+//   processInput(e);
+// }
+
+// function processInput(e) {
+//   if (gameOver) return;
+
+//   if ("KeyA" <= e.code && e.code <= "KeyZ") {
+//     while (col < width) {
+//       let currTile = document.getElementById(
+//         row.toString() + "-" + col.toString()
+//       );
+//       if (
+//         currTile.innerText == "" &&
+//         !currTile.classList.contains("hint-tile")
+//       ) {
+//         currTile.innerText = e.code[3];
+//         col += 1;
+//         break;
+//       }
+//       col += 1;
+//     }
+//   } else if (e.code == "Backspace") {
+//     while (col > 0) {
+//       col -= 1;
+//       let currTile = document.getElementById(
+//         row.toString() + "-" + col.toString()
+//       );
+//       if (!currTile.classList.contains("hint-tile")) {
+//         currTile.innerText = "";
+//         break;
+//       }
+//     }
+//   } else if (e.code == "Enter") {
+//     update();
+//   }
+
+//   if (!gameOver && row == height) {
+//     gameOver = true;
+//     document.getElementById("answer").innerText = word;
+//   }
+// }
+
+// function update() {
+//   let guess = "";
+//   document.getElementById("answer").innerText = "";
+
+//   for (let c = 0; c < width; c++) {
+//     let currTile = document.getElementById(row.toString() + "-" + c.toString());
+//     let letter = currTile.innerText;
+//     guess += letter;
+//   }
+
+//   guess = guess.toLowerCase();
+
+//   let correct = 0;
+//   let letterCount = {};
+//   for (let i = 0; i < word.length; i++) {
+//     let letter = word[i];
+//     if (letterCount[letter]) {
+//       letterCount[letter] += 1;
+//     } else {
+//       letterCount[letter] = 1;
+//     }
+//   }
+
+//   if (!guessList.includes(guess)) {
+//     if (score > 0) {
+//       score -= 1;
+//       localStorage.setItem("score", score.toString());
+//       document.getElementById("score").innerText = `Your Score: ${score}`;
+//     }
+//   }
+
+//   for (let c = 0; c < width; c++) {
+//     let currTile = document.getElementById(row.toString() + "-" + c.toString());
+//     let letter = currTile.innerText;
+
+//     if (word[c] == letter) {
+//       currTile.classList.add("correct");
+//       let keyTile = document.getElementById("Key" + letter);
+//       keyTile.classList.remove("present");
+//       keyTile.classList.add("correct");
+//       correct += 1;
+//       letterCount[letter] -= 1;
+//     }
+
+//     if (correct == width) {
+//       document.getElementById("answer").innerText =
+//         "You guessed the correct word. Click Play again to restart the game";
+//       score += 1;
+//       localStorage.setItem("score", score.toString());
+//       document.getElementById("score").innerText = `Your Score: ${score}`;
+//       gameOver = true;
+//       document.getElementById("play-again").style.display = "block";
+//     }
+//   }
+
+//   for (let c = 0; c < width; c++) {
+//     let currTile = document.getElementById(row.toString() + "-" + c.toString());
+//     let letter = currTile.innerText;
+
+//     if (!currTile.classList.contains("correct")) {
+//       if (word.includes(letter) && letterCount[letter] > 0) {
+//         currTile.classList.add("present");
+//         let keyTile = document.getElementById("Key" + letter);
+//         if (!keyTile.classList.contains("correct")) {
+//           keyTile.classList.add("present");
+//         }
+//         letterCount[letter] -= 1;
+//       } else {
+//         currTile.classList.add("absent");
+//         let keyTile = document.getElementById("Key" + letter);
+//         keyTile.classList.add("absent");
+//       }
+//     }
+//   }
+
+//   row += 1;
+//   col = 0;
+// }
+
+// function resetGame() {
+//   location.reload();
+// }
+
 var wordList = ["mongoose", "express", "nodejs"];
+var clues = {
+  mongoose: "A popular ODM for MongoDB in Node.js",
+  express: "A fast, unopinionated, minimalist web framework for Node.js",
+  nodejs: "A JavaScript runtime built on Chrome's V8 JavaScript engine",
+};
 var guessList = ["javascript", "python", "rust", "springboot"];
 
 var row = 0; // current guess (attempt #)
@@ -277,6 +509,7 @@ var gameOver = false;
 guessList = guessList.concat(wordList);
 
 var word = wordList[Math.floor(Math.random() * wordList.length)].toUpperCase();
+var clue = clues[word.toLowerCase()];
 console.log(word);
 
 var height = 1; // number of guesses
@@ -285,6 +518,7 @@ var width = word.length; // length of the word
 window.onload = function () {
   initialize();
   revealRandomLetters();
+  displayClue();
 };
 
 function initialize() {
@@ -340,6 +574,10 @@ function initialize() {
   document.addEventListener("keyup", (e) => {
     processInput(e);
   });
+}
+
+function displayClue() {
+  document.getElementById("clue").innerText = `Clue: ${clue}`;
 }
 
 function revealRandomLetters() {
