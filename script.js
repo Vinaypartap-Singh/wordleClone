@@ -487,11 +487,12 @@
 //   location.reload();
 // }
 
-var wordList = ["mongoose", "express", "nodejs"];
+var wordList = ["mongoose", "express", "nodejs", "reactjs"];
 var clues = {
   mongoose: "A popular ODM for MongoDB in Node.js",
   express: "A fast, unopinionated, minimalist web framework for Node.js",
   nodejs: "A JavaScript runtime built on Chrome's V8 JavaScript engine",
+  reactjs: "Based on Javascript make work easy for developers",
 };
 var guessList = ["javascript", "python", "rust", "springboot"];
 
