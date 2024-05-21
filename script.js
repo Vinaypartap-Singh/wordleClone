@@ -517,6 +517,8 @@ window.onload = function () {
   initialize();
   // revealRandomLetters();
   // displayClue();
+
+  document.getElementById("video").play();
 };
 
 function initialize() {
