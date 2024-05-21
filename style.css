@@ -162,4 +162,9 @@ body {
   .homeContentHolder {
     margin-top: 80px;
   }
+
+  #clue {
+    padding: 15px;
+    line-height: 1.7rem;
+  }
 }

@@ -596,7 +596,7 @@ function revealRandomLetters() {
     hintTile.classList.add("hint-tile");
   });
 
-  document.getElementById("hintBtn").style.display = "none";
+  // document.getElementById("hintBtn").style.display = "none";
 }
 
 function processKey() {
