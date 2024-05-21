@@ -145,6 +145,10 @@ body {
   margin-top: 300px;
 }
 
+#spacer {
+  height: 80px;
+}
+
 @media screen and (min-width: 320px) and (max-width: 480px) {
   .key-tile {
     width: 29px;
