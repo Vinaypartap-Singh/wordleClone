@@ -639,6 +639,7 @@ function processInput(e) {
   if (!gameOver && row == height) {
     gameOver = true;
     document.getElementById("answer").innerText = word;
+    document.getElementById("play-again").style.display = "block";
   }
 }
 
