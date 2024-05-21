@@ -146,15 +146,21 @@ body {
 }
 
 @media screen and (min-width: 320px) and (max-width: 480px) {
-  .key-tile,
-  .enter-key-tile {
+  .key-tile {
     width: 29px;
     height: 27px;
     font-size: 13px;
   }
 
+  .enter-key-tile {
+    width: fit-content;
+    padding: 5px;
+    font-size: 13px;
+    height: auto;
+  }
+
   .tile {
-    width: 40px;
+    width: 7%;
     height: 40px;
     font-size: 14px;
   }
@@ -170,5 +176,12 @@ body {
 
   .videoHome {
     width: 100%;
+    height: 200px;
+  }
+
+  #answer {
+    margin: 30px;
+    font-size: 18px;
+    margin-top: -33px;
   }
 }
