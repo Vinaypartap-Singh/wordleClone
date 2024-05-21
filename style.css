@@ -167,4 +167,8 @@ body {
     padding: 15px;
     line-height: 1.7rem;
   }
+
+  .videoHome {
+    width: 100%;
+  }
 }
