@@ -515,8 +515,8 @@ var width = word.length; // length of the word
 
 window.onload = function () {
   initialize();
-  revealRandomLetters();
-  displayClue();
+  // revealRandomLetters();
+  // displayClue();
 };
 
 function initialize() {
