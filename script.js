@@ -486,28 +486,30 @@
 // function resetGame() {
 //   location.reload();
 // }
-
 var wordList = ["maintenance"];
-var clues = {
-  maintenance: "A popular ODM for MongoDB in Node.js",
-};
 var guessList = ["javascript", "python", "rust", "springboot"];
 
 var row = 0; // current guess (attempt #)
 var col = 0; // current letter for that attempt
 
-var score = localStorage.getItem("score")
-  ? parseInt(localStorage.getItem("score"))
+// Get the score from localStorage
+var correctGuesses = localStorage.getItem("correctGuesses")
+  ? parseInt(localStorage.getItem("correctGuesses"))
+  : 0;
+var totalGuesses = localStorage.getItem("totalGuesses")
+  ? parseInt(localStorage.getItem("totalGuesses"))
   : 0;
 
-document.getElementById("score").innerText = `Your Score: ${score}`;
+// Calculate the score percentage
+var score =
+  totalGuesses > 0 ? Math.round((correctGuesses / totalGuesses) * 100) : 0;
+document.getElementById("score").innerText = `Your Score: ${score}%`;
 
 var gameOver = false;
 
 guessList = guessList.concat(wordList);
 
 var word = wordList[Math.floor(Math.random() * wordList.length)].toUpperCase();
-var clue = clues[word.toLowerCase()];
 console.log(word);
 
 var height = 1; // number of guesses
@@ -515,10 +517,6 @@ var width = word.length; // length of the word
 
 window.onload = function () {
   initialize();
-  // revealRandomLetters();
-  // displayClue();
-
-  // document.getElementById("video").play();
 };
 
 function initialize() {
@@ -576,28 +574,6 @@ function initialize() {
   });
 }
 
-function displayClue() {
-  document.getElementById("clue").innerText = `Clue: ${clue}`;
-}
-
-function revealRandomLetters() {
-  const numReveals = Math.floor(width / 3); // Adjust this value as needed
-  const revealedPositions = new Set();
-
-  while (revealedPositions.size < numReveals) {
-    const randomIndex = Math.floor(Math.random() * width);
-    revealedPositions.add(randomIndex);
-  }
-
-  revealedPositions.forEach((pos) => {
-    let hintTile = document.getElementById("0-" + pos);
-    hintTile.innerText = word[pos];
-    hintTile.classList.add("hint-tile");
-  });
-
-  // document.getElementById("hintBtn").style.display = "none";
-}
-
 function processKey() {
   e = { code: this.id };
   processInput(e);
@@ -611,10 +587,7 @@ function processInput(e) {
       let currTile = document.getElementById(
         row.toString() + "-" + col.toString()
       );
-      if (
-        currTile.innerText == "" &&
-        !currTile.classList.contains("hint-tile")
-      ) {
+      if (currTile.innerText == "") {
         currTile.innerText = e.code[3];
         col += 1;
         break;
@@ -627,7 +600,7 @@ function processInput(e) {
       let currTile = document.getElementById(
         row.toString() + "-" + col.toString()
       );
-      if (!currTile.classList.contains("hint-tile")) {
+      if (currTile.innerText != "") {
         currTile.innerText = "";
         break;
       }
@@ -667,11 +640,10 @@ function update() {
   }
 
   if (!guessList.includes(guess)) {
-    if (score > 0) {
-      score -= 1;
-      localStorage.setItem("score", score.toString());
-      document.getElementById("score").innerText = `Your Score: ${score}`;
-    }
+    // Increment total guesses and update the score
+    totalGuesses += 1;
+    localStorage.setItem("totalGuesses", totalGuesses.toString());
+    updateScore();
   }
 
   for (let c = 0; c < width; c++) {
@@ -690,9 +662,14 @@ function update() {
     if (correct == width) {
       document.getElementById("answer").innerText =
         "You guessed the correct word. Click Play again to restart the game";
-      score += 1;
-      localStorage.setItem("score", score.toString());
-      document.getElementById("score").innerText = `Your Score: ${score}`;
+
+      // Increment correct guesses and total guesses, then update the score
+      correctGuesses += 1;
+      totalGuesses += 1;
+      localStorage.setItem("correctGuesses", correctGuesses.toString());
+      localStorage.setItem("totalGuesses", totalGuesses.toString());
+      updateScore();
+
       gameOver = true;
       document.getElementById("play-again").style.display = "block";
     }
@@ -720,6 +697,14 @@ function update() {
 
   row += 1;
   col = 0;
+}
+
+function updateScore() {
+  // Calculate and update the score percentage
+  var score =
+    totalGuesses > 0 ? Math.round((correctGuesses / totalGuesses) * 100) : 0;
+  localStorage.setItem("score", score.toString());
+  document.getElementById("score").innerText = `Your Score: ${score}%`;
 }
 
 function resetGame() {
