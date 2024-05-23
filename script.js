@@ -246,6 +246,10 @@ function checkDailyLimit() {
 
   if (localStorage.getItem("playedToday") === "true" && lastDate === today) {
     alert("You have already played today's puzzle. Please come back tomorrow!");
+    document.getElementById("answer").innerText =
+      "You have already played today's puzzle. Please come back tomorrow!";
     gameOver = true;
   }
 }
+
+// document.getElementsByClassName(".keyboard-row").style.display = "flex"
