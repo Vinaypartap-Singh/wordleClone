@@ -1,54 +1,74 @@
-var wordList = ["maintenance"];
-var guessList = ["javascript", "python", "rust", "springboot"];
+// pending : remove code related to guess list and make clues visible on tiles and user will be able to type even if the hints are visible
 
-var row = 0; // current guess (attempt #)
-var col = 0; // current letter for that attempt
+// Function to show the game screen
+function showGameScreen() {
+  document.getElementById("welcomeScreen").style.display = "none";
+  document.getElementById("game").style.display = "block";
+  var keyboardRows = document.getElementsByClassName("keyboard-row");
+  for (var i = 0; i < keyboardRows.length; i++) {
+    keyboardRows[i].style.display = "flex";
+  }
+  document.getElementById("board").style.display = "flex";
+}
 
-// Get the score from localStorage
+// Global variables
+var row = 0;
+var col = 0;
 var correctGuesses = localStorage.getItem("correctGuesses")
   ? parseInt(localStorage.getItem("correctGuesses"))
   : 0;
 var totalGuesses = localStorage.getItem("totalGuesses")
   ? parseInt(localStorage.getItem("totalGuesses"))
   : 0;
-
-// Calculate the score percentage
 var score =
   totalGuesses > 0 ? Math.round((correctGuesses / totalGuesses) * 100) : 0;
 document.getElementById("score").innerText = `Your Score: ${score}%`;
-
 var gameOver = false;
+var word = "";
+var height = 1;
+var width = 0;
+var definitionClues = [];
+var letterClues = [];
 
-guessList = guessList.concat(wordList);
-
-function getDailyWord() {
-  let lastDate = localStorage.getItem("lastDate");
+// Function to get the data for the current day
+function getDailyData() {
   let today = new Date().toISOString().split("T")[0];
-
-  if (lastDate !== today) {
-    let newWord =
-      wordList[Math.floor(Math.random() * wordList.length)].toUpperCase();
-    localStorage.setItem("word", newWord);
-    localStorage.setItem("lastDate", today);
-    return newWord;
-  } else {
-    return localStorage.getItem("word");
-  }
+  fetch("dailyData.json")
+    .then((response) => response.json())
+    .then((data) => {
+      const todayData = data.find((entry) => entry.Date === today);
+      if (todayData) {
+        word = todayData.Word.toUpperCase();
+        definitionClues = [
+          todayData.DefinitionClue1,
+          todayData.DefinitionClue2,
+          todayData.DefinitionClue3,
+          todayData.DefinitionClue4,
+          todayData.DefinitionClue5,
+        ];
+        letterClues = [
+          todayData.LetterClue1,
+          todayData.LetterClue2,
+          todayData.LetterClue3,
+          todayData.LetterClue4,
+          todayData.LetterClue5,
+        ];
+        width = word.length;
+        initialize();
+        checkDailyLimit();
+      } else {
+        console.error("No data found for today");
+      }
+    })
+    .catch((error) => console.error("Error fetching daily data:", error));
 }
 
-var word = getDailyWord();
-console.log(word);
-
-var height = 1; // number of guesses
-var width = word.length; // length of the word
-
 window.onload = function () {
-  initialize();
-  checkDailyLimit();
+  getDailyData();
 };
 
+// Function to initialize the game
 function initialize() {
-  // Create the game board
   for (let r = 0; r < height; r++) {
     for (let c = 0; c < width; c++) {
       let tile = document.createElement("span");
@@ -59,7 +79,6 @@ function initialize() {
     }
   }
 
-  // Create the keyboard
   let keyboard = [
     ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
     ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
@@ -73,7 +92,6 @@ function initialize() {
 
     for (let j = 0; j < currRow.length; j++) {
       let keyTile = document.createElement("div");
-
       let key = currRow[j];
       keyTile.innerText = key;
       if (key == "Enter") {
@@ -96,17 +114,32 @@ function initialize() {
     document.body.appendChild(keyboardRow);
   }
 
-  // Listen for Key Press
   document.addEventListener("keyup", (e) => {
     processInput(e);
   });
+
+  displayClues();
 }
 
+// Function to display clues
+function displayClues() {
+  for (let i = 0; i < definitionClues.length; i++) {
+    let clue = document.createElement("div");
+    clue.classList.add("clue");
+    clue.innerText = `Clue ${i + 1}: ${definitionClues[i]} (Position ${
+      letterClues[i]
+    })`;
+    document.getElementById("clues").appendChild(clue);
+  }
+}
+
+// Function to process key input
 function processKey() {
   e = { code: this.id };
   processInput(e);
 }
 
+// Function to process user input
 function processInput(e) {
   if (gameOver) return;
 
@@ -144,6 +177,7 @@ function processInput(e) {
   }
 }
 
+// Function to update the game state
 function update() {
   let guess = "";
   document.getElementById("answer").innerText = "";
@@ -167,13 +201,6 @@ function update() {
     }
   }
 
-  if (!guessList.includes(guess)) {
-    // Increment total guesses and update the score
-    totalGuesses += 1;
-    localStorage.setItem("totalGuesses", totalGuesses.toString());
-    updateScore();
-  }
-
   for (let c = 0; c < width; c++) {
     let currTile = document.getElementById(row.toString() + "-" + c.toString());
     let letter = currTile.innerText;
@@ -191,7 +218,6 @@ function update() {
       document.getElementById("answer").innerText =
         "You guessed the correct word. Click Play again to restart the game";
 
-      // Increment correct guesses and total guesses, then update the score
       correctGuesses += 1;
       totalGuesses += 1;
       localStorage.setItem("correctGuesses", correctGuesses.toString());
@@ -200,7 +226,7 @@ function update() {
 
       gameOver = true;
       document.getElementById("play-again").style.display = "block";
-      localStorage.setItem("playedToday", "true");
+      setCookie("playedToday", "true", 1);
     }
   }
 
@@ -228,28 +254,59 @@ function update() {
   col = 0;
 }
 
+// Function to update the score
 function updateScore() {
-  // Calculate and update the score percentage
   var score =
     totalGuesses > 0 ? Math.round((correctGuesses / totalGuesses) * 100) : 0;
   localStorage.setItem("score", score.toString());
   document.getElementById("score").innerText = `Your Score: ${score}%`;
 }
 
+// Function to reset the game
 function resetGame() {
   location.reload();
 }
 
+// Function to check if the daily limit is reached
 function checkDailyLimit() {
-  let lastDate = localStorage.getItem("lastDate");
   let today = new Date().toISOString().split("T")[0];
-
-  if (localStorage.getItem("playedToday") === "true" && lastDate === today) {
+  if (
+    localStorage.getItem("playedToday") === "true" &&
+    localStorage.getItem("lastDate") === today
+  ) {
     alert("You have already played today's puzzle. Please come back tomorrow!");
     document.getElementById("answer").innerText =
       "You have already played today's puzzle. Please come back tomorrow!";
     gameOver = true;
+  } else {
+    localStorage.setItem("lastDate", today);
   }
 }
 
-// document.getElementsByClassName(".keyboard-row").style.display = "flex"
+// Function to set a cookie
+function setCookie(name, value, days) {
+  var expires = "";
+  if (days) {
+    var date = new Date();
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+// Function to get a cookie
+function getCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(";");
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == " ") c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
+}
+
+// Function to erase a cookie
+function eraseCookie(name) {
+  document.cookie = name + "=; Max-Age=-99999999;";
+}

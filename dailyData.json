@@ -1,0 +1,30 @@
+[
+  {
+    "Word": "Maintenance",
+    "DefinitionClue1": "Repair",
+    "DefinitionClue2": "Preservation",
+    "DefinitionClue3": "Service",
+    "DefinitionClue4": "Care",
+    "DefinitionClue5": "Upkeep",
+    "LetterClue1": 1,
+    "LetterClue2": 5,
+    "LetterClue3": 11,
+    "LetterClue4": 7,
+    "LetterClue5": 8,
+    "Date": "2024-05-23"
+  },
+  {
+    "Word": "Indigenous",
+    "DefinitionClue1": "Native",
+    "DefinitionClue2": "Aboriginal",
+    "DefinitionClue3": "Original",
+    "DefinitionClue4": "Inherent",
+    "DefinitionClue5": "Endemic",
+    "LetterClue1": 1,
+    "LetterClue2": 5,
+    "LetterClue3": 8,
+    "LetterClue4": 10,
+    "LetterClue5": 12,
+    "Date": "2024-05-25"
+  }
+]

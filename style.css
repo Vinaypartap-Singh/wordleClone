@@ -180,12 +180,16 @@ body {
   }
 
   .homeContentHolder {
-    margin-top: 80px;
+    margin-top: 0px;
   }
 
-  #clue {
+  #clues {
     padding: 15px;
     line-height: 1.7rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 13px;
   }
 
   .videoHome {
