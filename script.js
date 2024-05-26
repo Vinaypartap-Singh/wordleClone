@@ -1,5 +1,3 @@
-// pending : remove code related to guess list and make clues visible on tiles and user will be able to type even if the hints are visible
-
 // Function to show the game screen
 function showGameScreen() {
   document.getElementById("welcomeScreen").style.display = "none";
@@ -29,6 +27,7 @@ var height = 1;
 var width = 0;
 var definitionClues = [];
 var letterClues = [];
+var currentClueIndex = 0;
 
 // Function to get the data for the current day
 function getDailyData() {
@@ -119,6 +118,7 @@ function initialize() {
   });
 
   displayClues();
+  revealHints();
 }
 
 // Function to display clues
@@ -130,6 +130,17 @@ function displayClues() {
       letterClues[i]
     })`;
     document.getElementById("clues").appendChild(clue);
+  }
+}
+
+// Function to reveal hints
+function revealHints() {
+  for (let i = 0; i <= letterClues.length; i++) {
+    let pos = letterClues[i] - 1;
+    let tile = document.getElementById("0-" + pos);
+    console.log("0-" + pos);
+    tile.innerText = word[pos];
+    tile.classList.add("hint");
   }
 }
 
@@ -161,7 +172,7 @@ function processInput(e) {
       let currTile = document.getElementById(
         row.toString() + "-" + col.toString()
       );
-      if (currTile.innerText != "") {
+      if (!currTile.classList.contains("hint") && currTile.innerText != "") {
         currTile.innerText = "";
         break;
       }
@@ -190,63 +201,26 @@ function update() {
 
   guess = guess.toLowerCase();
 
-  let correct = 0;
-  let letterCount = {};
-  for (let i = 0; i < word.length; i++) {
-    let letter = word[i];
-    if (letterCount[letter]) {
-      letterCount[letter] += 1;
+  if (guess === word.toLowerCase()) {
+    correctGuesses += 1;
+    totalGuesses += 1;
+    localStorage.setItem("correctGuesses", correctGuesses.toString());
+    localStorage.setItem("totalGuesses", totalGuesses.toString());
+    updateScore();
+    gameOver = true;
+    document.getElementById("answer").innerText =
+      "You guessed the correct word. Click Play again to restart the game";
+    document.getElementById("play-again").style.display = "block";
+    setCookie("playedToday", "true", 1);
+  } else {
+    currentClueIndex++;
+    if (currentClueIndex < definitionClues.length) {
+      displayClues();
     } else {
-      letterCount[letter] = 1;
-    }
-  }
-
-  for (let c = 0; c < width; c++) {
-    let currTile = document.getElementById(row.toString() + "-" + c.toString());
-    let letter = currTile.innerText;
-
-    if (word[c] == letter) {
-      currTile.classList.add("correct");
-      let keyTile = document.getElementById("Key" + letter);
-      keyTile.classList.remove("present");
-      keyTile.classList.add("correct");
-      correct += 1;
-      letterCount[letter] -= 1;
-    }
-
-    if (correct == width) {
       document.getElementById("answer").innerText =
-        "You guessed the correct word. Click Play again to restart the game";
-
-      correctGuesses += 1;
-      totalGuesses += 1;
-      localStorage.setItem("correctGuesses", correctGuesses.toString());
-      localStorage.setItem("totalGuesses", totalGuesses.toString());
-      updateScore();
-
+        "Game Over! The correct word was " + word;
       gameOver = true;
       document.getElementById("play-again").style.display = "block";
-      setCookie("playedToday", "true", 1);
-    }
-  }
-
-  for (let c = 0; c < width; c++) {
-    let currTile = document.getElementById(row.toString() + "-" + c.toString());
-    let letter = currTile.innerText;
-
-    if (!currTile.classList.contains("correct")) {
-      if (word.includes(letter) && letterCount[letter] > 0) {
-        currTile.classList.add("present");
-        let keyTile = document.getElementById("Key" + letter);
-        if (!keyTile.classList.contains("correct")) {
-          keyTile.classList.add("present");
-        }
-        letterCount[letter] -= 1;
-      } else {
-        currTile.classList.add("absent");
-        let keyTile = document.getElementById("Key" + letter);
-        keyTile.classList.add("absent");
-      }
     }
   }
 
